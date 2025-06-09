@@ -29,6 +29,7 @@
   </head>
   <body>
     <div id="orientation-lock">Please rotate your device to <strong>landscape mode</strong> to play the game.</div>
+
     <div id="unity-container">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
@@ -39,6 +40,7 @@
       </div>
       <div id="unity-warning"> </div>
     </div>
+
     <script>
       window.addEventListener("load", function () {
         if ("serviceWorker" in navigator) {
@@ -52,12 +54,6 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var warningBanner = document.querySelector("#unity-warning");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
       function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
@@ -68,7 +64,7 @@
         if (type == 'error') div.style = 'background: red; padding: 10px;';
         else {
           if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
+          setTimeout(function () {
             warningBanner.removeChild(div);
             updateBannerVisibility();
           }, 5000);
@@ -80,7 +76,7 @@
       var loaderUrl = buildUrl + "/3bcbc94ee0c74e9e6e50f01cf8b756b1.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/cf9f752c193ad1a74f262d35be99ec2d.data.unityweb",
+        dataUrl: buildUrl + "/6ca731914071567c0749197e1d85f834.data.unityweb",
         frameworkUrl: buildUrl + "/d4d13d0335b2d8c5eccbfcb6e5891b6c.framework.js.unityweb",
         codeUrl: buildUrl + "/2de0c2d2752648823701567d2cb0c533.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
@@ -112,18 +108,14 @@
       };
       document.body.appendChild(script);
 
-      // Landscape lock logic
       function checkOrientation() {
         const lock_ = document.getElementById('orientation-lock');
-        const canvas_ = document.getElementById('unity-canvas');
         const container_ = document.getElementById('unity-container');
 
         if (window.innerHeight > window.innerWidth) {
-          // Portrait
           lock_.style.display = "flex";
           container_.style.display = "none";
         } else {
-          // Landscape
           lock_.style.display = "none";
           container_.style.display = "block";
         }
@@ -131,7 +123,7 @@
 
       window.addEventListener("orientationchange", checkOrientation);
       window.addEventListener("resize", checkOrientation);
-      checkOrientation(); // Initial check
+      checkOrientation();
     </script>
   </body>
 </html>
