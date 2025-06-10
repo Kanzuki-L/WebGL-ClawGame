@@ -28,7 +28,9 @@
     </style>
   </head>
   <body>
-    <div id="orientation-lock">Please rotate your device to <strong>landscape mode</strong> to play the game.</div>
+    <div id="orientation-lock">
+      Please rotate your device to <strong>landscape mode</strong> to play the game.
+    </div>
 
     <div id="unity-container">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
@@ -73,12 +75,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/3bcbc94ee0c74e9e6e50f01cf8b756b1.loader.js";
+      var loaderUrl = buildUrl + "/e1741066a05e56b562acb638063b7eec.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/6ca731914071567c0749197e1d85f834.data.unityweb",
-        frameworkUrl: buildUrl + "/d4d13d0335b2d8c5eccbfcb6e5891b6c.framework.js.unityweb",
-        codeUrl: buildUrl + "/2de0c2d2752648823701567d2cb0c533.wasm.unityweb",
+        dataUrl: buildUrl + "/7577585569a1f0477c58d02e89d25523.data.unityweb",
+        frameworkUrl: buildUrl + "/6c96828d6d9870e89c35dfdbe9619989.framework.js.unityweb",
+        codeUrl: buildUrl + "/8e1e057810c5a29560c4358ab7911c30.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Evoweb",
         productName: "Enhertu Claw Game",
@@ -123,7 +125,7 @@
 
       window.addEventListener("orientationchange", checkOrientation);
       window.addEventListener("resize", checkOrientation);
-      checkOrientation();
+      checkOrientation(); // Initial check
     </script>
   </body>
 </html>
