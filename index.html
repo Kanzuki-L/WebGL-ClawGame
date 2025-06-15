@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Enhertu Claw Game</title>
+    <title>Unity Web Player | Enhertu Claw Game</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="manifest" href="manifest.webmanifest">
@@ -75,12 +75,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/e1741066a05e56b562acb638063b7eec.loader.js";
+      var loaderUrl = buildUrl + "/627267cb08bbaf163bdcf3ae12e973cc.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/7577585569a1f0477c58d02e89d25523.data.unityweb",
-        frameworkUrl: buildUrl + "/6c96828d6d9870e89c35dfdbe9619989.framework.js.unityweb",
-        codeUrl: buildUrl + "/8e1e057810c5a29560c4358ab7911c30.wasm.unityweb",
+        dataUrl: buildUrl + "/fbe6d973519d7c816d5622c25ce0fd5c.data.unityweb",
+        frameworkUrl: buildUrl + "/280dc3672aff4f54be0b975592c760de.framework.js.unityweb",
+        codeUrl: buildUrl + "/ec33c226e847aa09903935ed042fae90.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Evoweb",
         productName: "Enhertu Claw Game",
@@ -110,6 +110,7 @@
       };
       document.body.appendChild(script);
 
+      // 🚫 Landscape restriction logic
       function checkOrientation() {
         const lock_ = document.getElementById('orientation-lock');
         const container_ = document.getElementById('unity-container');
