@@ -1,46 +1,62 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Enhertu Claw Game</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <link rel="manifest" href="manifest.webmanifest">
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Enhertu Plane Game</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
+    <link rel="stylesheet" href="TemplateData/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes" />
     <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background-color: black;
+        overflow: hidden;
+      }
+
+      #unity-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+
       #orientation-lock {
         display: none;
         position: fixed;
         z-index: 9999;
-        background: #000;
-        color: #fff;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
-        justify-content: flex-start;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        color: white;
+        font-size: 18px;
+        text-align: center;
+        justify-content: center;
         align-items: center;
-        flex-direction: column;
-        text-align: left;
-        font-size: 24px;
         padding: 20px;
       }
     </style>
   </head>
   <body>
+
     <div id="orientation-lock">
-      Please rotate your device to <strong>landscape mode</strong> to play the game.
+      Please rotate your device to <strong>landscape</strong> mode to play the game.
     </div>
 
     <div id="unity-container">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
-      <div id="unity-warning"> </div>
+      <div id="unity-warning"></div>
     </div>
 
     <script>
@@ -50,54 +66,63 @@
         }
       });
 
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var warningBanner = document.querySelector("#unity-warning");
+      const container = document.querySelector("#unity-container");
+      const canvas = document.querySelector("#unity-canvas");
+      const loadingBar = document.querySelector("#unity-loading-bar");
+      const progressBarFull = document.querySelector("#unity-progress-bar-full");
+      const warningBanner = document.querySelector("#unity-warning");
+      const orientationLock = document.querySelector("#orientation-lock");
 
       function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
+        const div = document.createElement("div");
         div.innerHTML = msg;
+        div.style = type === "error"
+          ? "background: red; padding: 10px;"
+          : "background: yellow; padding: 10px;";
         warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function () {
+        if (type !== "error") {
+          setTimeout(() => {
             warningBanner.removeChild(div);
-            updateBannerVisibility();
+            warningBanner.style.display = warningBanner.children.length ? "block" : "none";
           }, 5000);
         }
-        updateBannerVisibility();
+        warningBanner.style.display = "block";
       }
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/b2a382408185e99e9b13c1023fe0adf5.loader.js";
-      var config = {
+      function checkOrientation() {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const isPortrait = window.innerHeight > window.innerWidth;
+
+        if (isMobile && isPortrait) {
+          orientationLock.style.display = "flex";
+          container.style.display = "none";
+        } else {
+          orientationLock.style.display = "none";
+          container.style.display = "flex";
+        }
+      }
+
+      window.addEventListener("resize", checkOrientation);
+      window.addEventListener("orientationchange", checkOrientation);
+      checkOrientation();
+
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/0651e4448a801087b54e482124ecb636.loader.js";
+      const config = {
         arguments: [],
-        dataUrl: buildUrl + "/1f6275f5bad12534f9b55b645b2fe579.data.unityweb",
-        frameworkUrl: buildUrl + "/280dc3672aff4f54be0b975592c760de.framework.js.unityweb",
-        codeUrl: buildUrl + "/3c6fd7349890a2f44ab82f940427704c.wasm.unityweb",
+        dataUrl: buildUrl + "/3ca4bc8fd0884bb33caa42fb5ecd4237.data.unityweb",
+        frameworkUrl: buildUrl + "/aa7ae2ead50673ee85501f682ab00562.framework.js.unityweb",
+        codeUrl: buildUrl + "/55ccf9919a2edd24e6fa98be122ea623.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Evoweb",
-        productName: "Enhertu Claw Game",
-        productVersion: "0.1.0",
+        productName: "Enhertu Plane Game",
+        productVersion: "0.1.1",
         showBanner: unityShowBanner,
       };
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-      }
-
       loadingBar.style.display = "block";
 
-      var script = document.createElement("script");
+      const script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
@@ -109,23 +134,7 @@
         });
       };
       document.body.appendChild(script);
-
-      function checkOrientation() {
-        const lock_ = document.getElementById('orientation-lock');
-        const container_ = document.getElementById('unity-container');
-
-        if (window.innerHeight > window.innerWidth) {
-          lock_.style.display = "flex";
-          container_.style.display = "none";
-        } else {
-          lock_.style.display = "none";
-          container_.style.display = "block";
-        }
-      }
-
-      window.addEventListener("orientationchange", checkOrientation);
-      window.addEventListener("resize", checkOrientation);
-      checkOrientation();
     </script>
+
   </body>
 </html>
