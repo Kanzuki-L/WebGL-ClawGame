@@ -7,80 +7,84 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico" />
     <link rel="stylesheet" href="TemplateData/style.css" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, shrink-to-fit=yes">
     <style>
       html, body {
         margin: 0;
         padding: 0;
+        background: #000;
         height: 100%;
-        background: black;
         overflow: hidden;
       }
 
       #unity-container {
-        width: 100vw;
-        height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
+        height: 100%;
+        width: 100%;
         position: relative;
       }
 
       #unity-canvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-        background: black;
+        width: 960px;
+        height: 600px;
+        background: #000;
       }
 
       #unity-loading-bar {
         position: absolute;
         bottom: 20px;
         width: 60%;
-        margin: auto;
         text-align: center;
-        z-index: 10;
-      }
-
-      #unity-logo {
-        margin-bottom: 8px;
-      }
-
-      #unity-progress-bar-empty {
-        width: 100%;
-        height: 20px;
-        background: #555;
-        border-radius: 10px;
-        overflow: hidden;
-      }
-
-      #unity-progress-bar-full {
-        width: 0%;
-        height: 100%;
-        background: #ffffff;
-        transition: width 0.3s ease;
       }
 
       #unity-warning {
         position: absolute;
         top: 10px;
-        left: 0;
-        right: 0;
-        text-align: center;
         color: white;
-        z-index: 20;
+        width: 100%;
+        text-align: center;
+        z-index: 10;
+      }
+
+      #orientation-blocker {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+        color: white;
+        font-size: 24px;
+        font-family: sans-serif;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        z-index: 100;
+        padding: 20px;
+      }
+
+      #orientation-blocker.active {
+        display: flex;
       }
     </style>
   </head>
   <body>
     <div id="unity-container">
-      <canvas id="unity-canvas" tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
       <div id="unity-loading-bar">
-        <div id="unity-logo"><img src="TemplateData/unity-logo-dark.png" alt="logo" /></div>
+        <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
       <div id="unity-warning"></div>
+    </div>
+
+    <div id="orientation-blocker">
+      Please rotate your device to <strong>landscape mode</strong> to play the game.
     </div>
 
     <script>
@@ -95,22 +99,21 @@
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var warningBanner = document.querySelector("#unity-warning");
+      var orientationBlocker = document.querySelector("#orientation-blocker");
 
       function unityShowBanner(msg, type) {
         var div = document.createElement("div");
         div.innerHTML = msg;
-        div.style = type === "error" 
-          ? "background: red; padding: 10px;" 
+        div.style = type === "error"
+          ? "background: red; padding: 10px;"
           : "background: yellow; padding: 10px;";
         warningBanner.appendChild(div);
-
         if (type !== "error") {
           setTimeout(() => {
             warningBanner.removeChild(div);
             warningBanner.style.display = warningBanner.children.length ? "block" : "none";
           }, 5000);
         }
-
         warningBanner.style.display = warningBanner.children.length ? "block" : "none";
       }
 
@@ -118,22 +121,25 @@
       var loaderUrl = buildUrl + "/905787f7871197e4be48742a24719621.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/a78f6691fa5bcf1c9513ca782b9bd185.data.unityweb",
+        dataUrl: buildUrl + "/881e286ca0f699719a8028ff9001e6bd.data.unityweb",
         frameworkUrl: buildUrl + "/aa7ae2ead50673ee85501f682ab00562.framework.js.unityweb",
         codeUrl: buildUrl + "/c0850bb5809356f75c331d7d62655119.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Evoweb",
-        productName: "Enhertu Claw Game",
+        productName: "Enhertu Plane Game",
         productVersion: "0.1.1",
         showBanner: unityShowBanner,
       };
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        var meta = document.createElement("meta");
-        meta.name = "viewport";
-        meta.content = "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
-        document.getElementsByTagName("head")[0].appendChild(meta);
+      function checkOrientation() {
+        const isPortrait = window.innerHeight > window.innerWidth;
+        orientationBlocker.classList.toggle("active", isPortrait);
+        container.style.display = isPortrait ? "none" : "flex";
       }
+
+      window.addEventListener("orientationchange", checkOrientation);
+      window.addEventListener("resize", checkOrientation);
+      checkOrientation();
 
       loadingBar.style.display = "block";
 
