@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico" />
     <link rel="stylesheet" href="TemplateData/style.css" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, shrink-to-fit=yes">
     <style>
       html, body {
         margin: 0;
@@ -64,6 +65,10 @@
         z-index: 100;
         padding: 20px;
       }
+
+      #orientation-blocker.active {
+        display: flex;
+      }
     </style>
   </head>
   <body>
@@ -79,7 +84,7 @@
     </div>
 
     <div id="orientation-blocker">
-      Please rotate your device to landscape mode to play the game.
+      Please rotate your device to <strong>landscape mode</strong> to play the game.
     </div>
 
     <script>
@@ -128,12 +133,13 @@
 
       function checkOrientation() {
         const isPortrait = window.innerHeight > window.innerWidth;
-        orientationBlocker.style.display = isPortrait ? "flex" : "none";
+        orientationBlocker.classList.toggle("active", isPortrait);
+        container.style.display = isPortrait ? "none" : "flex";
       }
 
       window.addEventListener("orientationchange", checkOrientation);
       window.addEventListener("resize", checkOrientation);
-      checkOrientation(); // Initial check
+      checkOrientation();
 
       loadingBar.style.display = "block";
 
