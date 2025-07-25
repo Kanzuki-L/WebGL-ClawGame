@@ -3,35 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Enhertu Claw Game</title>
-
+  <title>Unity Web Player | Enhertu Claw Game</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
-
   <style>
     html, body {
+      width: 100%;
+      height: 100%;
       margin: 0;
       padding: 0;
-      background: black;
-      height: 100%;
       overflow: hidden;
+      background: #000; /* default black background */
     }
 
     #unity-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      width: 100%;
-    }
-
-    #unity-canvas {
-      width: 100vw;
-      height: 100vh;
-      touch-action: none;
-      display: block;
+      position: relative;
+      z-index: 1;
     }
 
     #orientation-lock {
@@ -44,7 +33,7 @@
       height: 100vh;
       background: black;
       color: white;
-      font-size: 20px;
+      font-size: 18px;
       text-align: center;
       justify-content: center;
       align-items: center;
@@ -52,28 +41,19 @@
       flex-direction: column;
     }
 
+    #orientation-lock.visible {
+      display: flex;
+    }
+
     #orientation-lock img {
       width: 100px;
       margin-bottom: 20px;
     }
-
-    #unity-warning {
-      color: white;
-      font-size: 14px;
-      padding: 10px;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
-  <!-- Orientation Message -->
-  <div id="orientation-lock">
-    Please rotate your device to <strong>landscape</strong> to play the game.
-  </div>
-
-  <!-- Unity Container -->
   <div id="unity-container">
-    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
     <div id="unity-loading-bar">
       <div id="unity-logo"></div>
       <div id="unity-progress-bar-empty">
@@ -83,71 +63,49 @@
     <div id="unity-warning"></div>
   </div>
 
+  <!-- Orientation Lock Overlay -->
+  <div id="orientation-lock">
+    <p>Please rotate your device to <strong>landscape</strong> mode.</p>
+  </div>
+
   <script>
-    window.addEventListener("load", () => {
+    window.addEventListener("load", function () {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("ServiceWorker.js");
       }
     });
 
-    const container = document.querySelector("#unity-container");
-    const canvas = document.querySelector("#unity-canvas");
-    const loadingBar = document.querySelector("#unity-loading-bar");
-    const progressBarFull = document.querySelector("#unity-progress-bar-full");
-    const warningBanner = document.querySelector("#unity-warning");
-    const orientationLock = document.querySelector("#orientation-lock");
+    var container = document.querySelector("#unity-container");
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var warningBanner = document.querySelector("#unity-warning");
 
     function unityShowBanner(msg, type) {
-      const div = document.createElement("div");
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+      }
+      var div = document.createElement('div');
       div.innerHTML = msg;
-      div.style = `padding: 10px; background: ${type === "error" ? "red" : "yellow"}`;
       warningBanner.appendChild(div);
-
-      if (type !== "error") {
-        setTimeout(() => {
+      if (type === 'error') div.style = 'background: red; padding: 10px;';
+      else {
+        if (type === 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(function () {
           warningBanner.removeChild(div);
-          warningBanner.style.display = warningBanner.children.length ? "block" : "none";
+          updateBannerVisibility();
         }, 5000);
       }
-
-      warningBanner.style.display = warningBanner.children.length ? "block" : "none";
+      updateBannerVisibility();
     }
 
-    function checkOrientation() {
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      const isPortrait = window.innerHeight > window.innerWidth;
-
-      if (isMobile && isPortrait) {
-        orientationLock.style.display = "flex";
-        container.style.display = "none";
-      } else {
-        orientationLock.style.display = "none";
-        container.style.display = "flex";
-        resizeCanvasToDisplaySize(canvas);
-      }
-    }
-
-    function resizeCanvasToDisplaySize(canvas) {
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-      }
-    }
-
-    window.addEventListener("resize", checkOrientation);
-    window.addEventListener("orientationchange", checkOrientation);
-    checkOrientation();
-
-    // Unity WebGL config
-    const buildUrl = "Build";
-    const loaderUrl = `${buildUrl}/27aac4b7268aa67c02a682485fe6687b.loader.js`;
-    const config = {
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/214ba514b26c0dcd4def39a85829c4fb.loader.js";
+    var config = {
       arguments: [],
-      dataUrl: `${buildUrl}/ddcdd10688b8c3a71e8e5340f9085092.data.unityweb`,
-      frameworkUrl: `${buildUrl}/566c0a5e1c01cfabdcc455557cec079e.framework.js.unityweb`,
-      codeUrl: `${buildUrl}/d6cf577afdcd264312e3471803bd33fc.wasm.unityweb`,
+      dataUrl: buildUrl + "/ca93fb27fea83650ee11a26a9d01b43a.data.unityweb",
+      frameworkUrl: buildUrl + "/566c0a5e1c01cfabdcc455557cec079e.framework.js.unityweb",
+      codeUrl: buildUrl + "/450e2dec8a47dac0550e618b8f26eef1.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "Evoweb",
       productName: "Enhertu Claw Game",
@@ -157,19 +115,30 @@
 
     loadingBar.style.display = "block";
 
-    const script = document.createElement("script");
+    var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
-        progressBarFull.style.width = `${progress * 100}%`;
+        progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
-        resizeCanvasToDisplaySize(canvas);
       }).catch((message) => {
         alert(message);
       });
     };
     document.body.appendChild(script);
+
+    // Orientation Handling
+    const orientationLock = document.getElementById("orientation-lock");
+
+    function checkOrientation() {
+      const isPortrait = window.innerHeight > window.innerWidth;
+      orientationLock.classList.toggle("visible", isPortrait);
+    }
+
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("orientationchange", checkOrientation);
+    checkOrientation();
   </script>
 </body>
 </html>
